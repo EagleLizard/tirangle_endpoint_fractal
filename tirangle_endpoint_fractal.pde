@@ -1,19 +1,52 @@
 final int SW = 500, SH = SW;
-easeTriangle testTriangle;
+final int ITERS = 2;
+final int Y_INIT = SH/2;
+final int X_INIT = SW/2;
+final int DRAW_STEPS = 30;
+final float SIZE_INIT = 100;//size of the first triangle drawn
+final float SHRINK_FACTOR = 0.5;//how much each new generation of edges is to shrink
+
+ArrayList<easeTriangle> triFract;//holds all of the easeTriangle instances
+int edgeBeginIndex;//marks where the edges of the fractal begin (like the leaves of a binary tree)
+int currentIteration;
+
+
 void setup(){
   size(SW,SH);
   style_specs_init();
-  testTriangle = new easeTriangle(SW/2, SH/2, 50, 0, 20);
+  triangleFract_init();
 }
 
 void draw(){
   background(0xFFFFFF);
-  testTriangle.draw_me();
+  //draw all edges until triFact.get(edgeBeginIndex).finished==true,
+  //then generate new set of edges and repeat until desired iterations are drawn.
+  if(currentIteration < ITERS){
+    if(triFract.get(edgeBeginIndex).finished==true){
+      edge_generate();
+    }
+  }
+  //call draw_me on every triangle every draw() cycle
+  for(int i = 0; i < triFract.size() ; ++i){
+    triFract.get(i).draw_me();
+  }
 }
 
 void style_specs_init(){
   noFill();
 }
+
+void edge_generate(){
+  //generate the new edges duh
+}
+
+void triangleFract_init(){
+  currentIteration = 0;
+  triFract = new ArrayList<easeTriangle>();
+  triFract.add(new easeTriangle(X_INIT, Y_INIT, SIZE_INIT, 0, DRAW_STEPS));
+  edgeBeginIndex = 0;//the first triangle is the first edge
+}
+
 //The easeTriangle class
 //Purpose: Draws a triangle so that it appears to 'pop' into
 //         existence as if it were eased
